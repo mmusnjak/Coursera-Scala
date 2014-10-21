@@ -44,4 +44,22 @@ class HuffmanSuite extends FunSuite {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
   }
+
+  test("create code tree of a list") {
+    val listChars = List('a', 'b', 'a', 'b', 'b', 'c')
+    assert(createCodeTree(listChars) === Fork(Leaf('b',3),Fork(Leaf('c',1),Leaf('a',2),List('c', 'a'),3),List('b', 'c', 'a'),6))
+  }
+
+   test("decode message") {
+   val tree = Fork(Leaf('a',8), Fork(Fork(Leaf('b', 3), Fork(Leaf('c', 1), Leaf('d', 1), List('c', 'd'), 2), List('b', 'c', 'd'), 5), Fork(Fork(Leaf('e', 1), Leaf('f', 1), List('e', 'f'), 2), Fork(Leaf('g', 1), Leaf('h', 1), List('g', 'h'), 2), List('e', 'f', 'g', 'h'), 4), List('b', 'c', 'd', 'e', 'f', 'g', 'h'), 9), List('a','b', 'c', 'd', 'e', 'f', 'g', 'h'), 17)
+   val msg: List[Bit] = List(1, 0, 0, 0, 1, 0, 1, 0)
+   assert(decode(tree, msg) === List('b', 'a', 'c'))
+  }
+   
+  test("encode message") {
+   val tree = Fork(Leaf('a',8), Fork(Fork(Leaf('b', 3), Fork(Leaf('c', 1), Leaf('d', 1), List('c', 'd'), 2), List('b', 'c', 'd'), 5), Fork(Fork(Leaf('e', 1), Leaf('f', 1), List('e', 'f'), 2), Fork(Leaf('g', 1), Leaf('h', 1), List('g', 'h'), 2), List('e', 'f', 'g', 'h'), 4), List('b', 'c', 'd', 'e', 'f', 'g', 'h'), 9), List('a','b', 'c', 'd', 'e', 'f', 'g', 'h'), 17)
+   val text: List[Char] = string2Chars("bac")
+   assert(encode(tree)(text) === List(1, 0, 0, 0, 1, 0, 1, 0))
+  }
+    
 }
