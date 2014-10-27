@@ -1,6 +1,6 @@
 package forcomp
 
-import common._
+//import common._
 
 
 object Anagrams {
@@ -184,6 +184,35 @@ object Anagrams {
     }
   }  
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = _sentenceAnagrams(sentenceOccurrences(sentence))
-    
 
+  def sentenceAnagramsFromCache(sentenceOccurrence: Occurrences, wordFromDictionaryByOccurence: Occurrences => List[Word]): List[Sentence] = {
+    if(sentenceOccurrence.isEmpty) List(List())
+    else {
+      for {
+        sentenceSubsetOccurrence <- combinations(sentenceOccurrence)
+        if sentenceSubsetOccurrence != Nil
+        word <- wordFromDictionaryByOccurence(sentenceSubsetOccurrence)
+        if word != Nil
+        anagrams <- sentenceAnagramsFromCache(subtract(sentenceOccurrence, sentenceSubsetOccurrence), wordFromDictionaryByOccurence)
+      } yield word :: anagrams
+    }
+  }
+  
+  def sentenceAnagramsMemo(sentence: Sentence): List[Sentence] = {
+    lazy val mutableDictByOccurrence = scala.collection.mutable.Map.empty[Occurrences, List[Word]]
+
+    def cachedWordFromDictByOccurrence(occurrence: Occurrences): List[Word] = {
+      mutableDictByOccurrence get occurrence match {
+        case Some(v) => v
+        case None => {
+          val words = dictionaryByOccurrences.getOrElse(occurrence, List())
+          mutableDictByOccurrence += (occurrence -> words)
+          words
+        }
+      }
+    }
+    sentenceAnagramsFromCache(sentenceOccurrences(sentence), cachedWordFromDictByOccurrence)
+  }
+  
 }
+

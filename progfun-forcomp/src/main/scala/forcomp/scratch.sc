@@ -76,4 +76,12 @@ object scratch {
                                                   //| 0), (2,31), (2,32), (2,
                                                   //| Output exceeds cutoff limit.
 
+  val s = Anagrams.sentenceAnagrams(List("i", "love", "you"))
+                                                  //> s  : List[forcomp.Anagrams.Sentence] = List(List(Io, Lev, you), List(Io, yo
+                                                  //| u, Lev), List(Lev, Io, you), List(Lev, you, Io), List(olive, you), List(you
+                                                  //| , Io, Lev), List(you, Lev, Io), List(you, olive))
+  val sMemo = Anagrams.sentenceAnagramsMemo(List("i", "love", "you"))
+                                                  //> sMemo  : List[forcomp.Anagrams.Sentence] = List(List(Io, Lev, you), List(Io
+                                                  //| , you, Lev), List(Lev, Io, you), List(Lev, you, Io), List(olive, you), List
+                                                  //| (you, Io, Lev), List(you, Lev, Io), List(you, olive))
 }
