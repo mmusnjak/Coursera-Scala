@@ -64,4 +64,56 @@ class BloxorzSuite extends FunSuite {
       assert(solution.length == optsolution.length)
     }
   }
+  
+  test("isLegal") {
+    new Level1 {
+      assert(Block(Pos(1, 1), Pos(1, 1)).isLegal)
+      assert(!(Block(Pos(999, 84), Pos(999, 84)).isLegal))
+      assert(!(Block(Pos(3, 0), Pos(3, 1)).isLegal))
+      assert((Block(Pos(3, 1), Pos(3, 1)).isLegal))
+      assert((Block(Pos(3, 1), Pos(3, 1)).isLegal))
+      assert(!(Block(Pos(-1, 1), Pos(-1, 1)).isLegal))
+
+    }
+  }
+  
+  test("legalNeighbors") {
+    new Level1 {
+      assert(Block(Pos(1, 1), Pos(1, 1)).legalNeighbors == List((Block(Pos(1, 2), Pos(1, 3)), Right), (Block(Pos(2, 1), Pos(3, 1)), Down)))
+    }
+  }
+
+  test("neighborsWithHistory") {
+    new Level1 {
+      assert(neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up)).toSet == Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))))
+    }
+  }
+
+  test("newNeighborsOnly") {
+    new Level1 {
+      assert(newNeighborsOnly(Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))).toStream,
+
+        Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))) == Set(
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))).toStream)
+    }
+  }
+
+  test("Solver: from (level 1") {
+    new Level1 {
+      val moves = from(Set((startBlock, List())).toStream, Set(startBlock))
+      assert(moves(0) === (Block(Pos(1, 2), Pos(1, 3)), List(Right)))
+      assert(moves(1) === (Block(Pos(2, 1), Pos(3, 1)), List(Down)))
+      assert(moves(2) === (Block(Pos(1, 4), Pos(1, 4)), List(Right, Right)))
+      assert(moves(3) === (Block(Pos(2, 2), Pos(2, 3)), List(Down, Right)))
+      assert(moves(4) === (Block(Pos(2, 2), Pos(3, 2)), List(Right, Down)))
+      assert(moves(5) === (Block(Pos(2, 4), Pos(3, 4)), List(Down, Right, Right)))
+      assert(moves(6) === (Block(Pos(2, 1), Pos(2, 1)), List(Left, Down, Right)))
+      // ...
+      assert(moves.length === 110)
+    }
+  }
 }
